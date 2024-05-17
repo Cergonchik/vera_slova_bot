@@ -3,6 +3,7 @@ package com.javarush.telegrambot;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.methods.send.SendAnimation;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -31,6 +32,7 @@ public class MultiSessionTelegramBot extends TelegramLongPollingBot {
 
     private List<Message> sendMessages = new ArrayList<>();
 
+
     public MultiSessionTelegramBot(String name, String token) {
         this.name = name;
         this.token = token;
@@ -51,6 +53,12 @@ public class MultiSessionTelegramBot extends TelegramLongPollingBot {
         this.updateEvent.set(updateEvent);
         onUpdateEventReceived(this.updateEvent.get());
     }
+
+    //---------------------------------------
+
+
+
+    //---------------------------------------
 
     public void onUpdateEventReceived(Update updateEvent) {
         //do nothing
@@ -100,6 +108,7 @@ public class MultiSessionTelegramBot extends TelegramLongPollingBot {
         SendPhoto photo = createPhotoMessage(photoKey);
         executeAsync(photo);
     }
+
 
     public void sendImageMessageAsync(String imagePath) {
         SendPhoto photo = createPhotoMessage(Path.of(imagePath));

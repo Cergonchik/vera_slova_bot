@@ -8,13 +8,18 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static com.javarush.telegrambot.TelegramBotContent.*;
 
 public class MyFirstTelegramBot extends MultiSessionTelegramBot {
-    public static final String NAME = "jru_demo_mentor_777_bot"; // TODO: добавьте имя бота в кавычках
-    public static final String TOKEN = "7010235483:AAFVAsQkoT1SpZsHIbvz2fgBfiIgSNhO-B0"; //TODO: добавьте токен бота в кавычках
+    public static final String NAME = "vera_slova_bot"; // TODO: добавьте имя бота в кавычках
+    public static final String TOKEN = "7080860457:AAGTlw1f_aYDRqauWVMY0-wnzgoMxtZ-l_o"; //TODO: добавьте токен бота в кавычках
+    private HashMap<String, String> listUsers = new HashMap<>();
+    private List<String> listName = new ArrayList<>();
+    private List<String> allText = new ArrayList<>();
+    private int ind = 0;
 
     public MyFirstTelegramBot() {
         super(NAME, TOKEN);
@@ -22,82 +27,111 @@ public class MyFirstTelegramBot extends MultiSessionTelegramBot {
 
     @Override
     public void onUpdateEventReceived(Update updateEvent) {
-        // ообщение о начале игры
+        // ообщение о начале игры String.format("%s",
+
+        boolean flag = allText.contains(getMessageText());
+
+        if (ind == 3 && !flag ) {
+            sendPhotoMessageAsync(listUsers.get(listName.get(0)));
+            sendTextMessageAsync("Вводи слово " + listName.get(0));
+
+            allText.add(getMessageText());
+            ++ind;
+
+        } else if (ind == 4 && !flag) {
+            sendPhotoMessageAsync(listUsers.get(listName.get(1)));
+            sendTextMessageAsync("Вводи слово " + listName.get(1));
+
+            allText.add(getMessageText());
+            --ind;
+
+        } else if (flag) {
+            sendTextMessageAsync("Такое слово уже есть");
+        }
+
+        /*else if ((ind == 3 || ind == 4) && !getCallbackQueryButtonKey().equals("botton_3")  ){
+            if (ind == 3) {
+                ++ind;
+            } else {
+                --ind;
+            }
+            sendTextMessageAsync("Такое слово уже есть");
+            sendTextMessageAsync(STEP_5_TEXT, Map.of("Нажми и пробуй еще раз!", "botton_3"));
+        }*/
+
         if (getMessageText().equals("/start")) {
-            setUserGlory(0);
-            sendPhotoMessageAsync("step_1_pic");
-           sendTextMessageAsync(STEP_1_TEXT , Map.of("Взлом холодильника","step_1_btn"));
+            sendPhotoMessageAsync("techer_1");
+            sendTextMessageAsync(STEP_1_TEXT, Map.of("ДАЛЕЕ!", "botton_1"));
+        } else if (ind == 1) {
+            sendPhotoMessageAsync("techer_2");
+            sendTextMessageAsync(STEP_4_TEXT, Map.of("ДАЛЕЕ!", "botton_2"));
+            ++ind;
         }
 
-        if (getCallbackQueryButtonKey().equals("step_1_btn")) {
-            addUserGlory(20);
-            sendPhotoMessageAsync("step_2_pic");
+        if (getCallbackQueryButtonKey().equals("botton_1")) {
+
+            sendPhotoMessageAsync("team_1");
             sendTextMessageAsync(STEP_2_TEXT,
-                    Map.of("Взять сосиску! +20 славы", "step_2_btn",
-                    "Взять рыбку! +20 славы", "step_2_btn",
-                    "Скинуть банку с огурцами! +20 славы", "step_2_btn")
-            );
+                    Map.of("Панда", "panda",
+                            "Мстер Шифу", "master",
+                            "Обезьяна", "monkey",
+                            "Змея", "snake",
+                            "Тигрица", "tiger",
+                            "Богомол", "bogomol",
+                            "Цапля", "heron"
+                    ));
+            ++ind;
+        } else if (getCallbackQueryButtonKey().equals("botton_2")) {
+            sendPhotoMessageAsync("team_1");
+            sendTextMessageAsync(STEP_3_TEXT,
+                    Map.of("Панда", "panda",
+                            "Мстер Шифу", "master",
+                            "Обезьяна", "monkey",
+                            "Змея", "snake",
+                            "Тигрица", "tiger",
+                            "Богомол", "bogomol",
+                            "Цапля", "heron"
+                    ));
+            ++ind;
         }
 
-        // взламываем робот пылесос
-        if (getCallbackQueryButtonKey().equals("step_2_btn")) {
-            addUserGlory(30);
-            sendPhotoMessageAsync("step_3_pic");
-            sendTextMessageAsync(STEP_3_TEXT, Map.of("Взлом робота пылесоса","step_3_btn"));
+
+        switch (getCallbackQueryButtonKey()) {
+            case "panda":
+                listUsers.put("Панда", "panda");
+                listName.add("Панда");
+                break;
+            case "master":
+                listUsers.put("Мастер", "master");
+                listName.add("Мастер");
+                break;
+            case "monkey":
+                listUsers.put("Обезьяна", "monkey");
+                listName.add("Обезьяна");
+                break;
+            case "snake":
+                listUsers.put("Змея", "snake");
+                listName.add("Змея");
+                break;
+            case "tiger":
+                listUsers.put("Тигрица", "tiger");
+                listName.add("Тигрица");
+                break;
+            case "bogomol":
+                listUsers.put("Богомол", "bogomol");
+                listName.add("Богомол");
+                break;
+            case "heron":
+                listUsers.put("Цапля", "heron");
+                listName.add("Цапля");
+                break;
         }
 
-        if (getCallbackQueryButtonKey().equals("step_3_btn")) {
-            addUserGlory(30);
-            sendPhotoMessageAsync("step_4_pic");
-            sendTextMessageAsync(STEP_4_TEXT,
-                    Map.of("Отправить робот за едой! +30 славы", "step_4_btn",
-                            "Взять рыбку! +30 славы", "step_4_btn",
-                            "Скинуть банку с огурцами! +30 славы", "step_4_btn")
-            );
-        }
-
-        // взламываем камеру go pro
-        if (getCallbackQueryButtonKey().equals("step_4_btn")) {
-            addUserGlory(40);
-            sendPhotoMessageAsync("step_5_pic");
-            sendTextMessageAsync(STEP_5_TEXT, Map.of("Взлом камеры go pro","step_5_btn"));
-        }
-
-        if (getCallbackQueryButtonKey().equals("step_5_btn")) {
-            addUserGlory(40);
-            sendPhotoMessageAsync("step_6_pic");
-            sendTextMessageAsync(STEP_6_TEXT,
-                    Map.of("Снять видео на камеру! +40 славы", "step_6_btn",
-                            "Сделать фото! +40 славы", "step_6_btn",
-                            "Очистить флешку на камере! +40 славы", "step_6_btn")
-            );
-        }
-
-        // взламываем компьютер
-        if (getCallbackQueryButtonKey().equals("step_6_btn")) {
-            addUserGlory(50);
-            sendPhotoMessageAsync("step_7_pic");
-            sendTextMessageAsync(STEP_7_TEXT, Map.of("Взлом компьютера","step_7_btn"));
-        }
-
-        if (getCallbackQueryButtonKey().equals("step_7_btn")) {
-            addUserGlory(50);
-            sendPhotoMessageAsync("step_8_pic");
-            sendTextMessageAsync(STEP_8_TEXT,
-                    Map.of("Написать код на Java! +50 славы", "step_8_btn",
-                            "Написать Web приложение! +50 славы", "step_8_btn",
-                            "Выключить компьютер и пойти спать! +50 славы", "step_8_btn")
-            );
-        }
-
-        // хвастаемся дворовым котам
-        if (getCallbackQueryButtonKey().equals("step_8_btn")) {
-            sendPhotoMessageAsync("final_pic");
-            sendTextMessageAsync(FINAL_TEXT + "Заработанные очки кота, " + getUserGlory() + " можно похвастаться дворовым котам!"  );
-        }
-
-        if (getMessageText().equals("/glory")) {
-            sendTextMessageAsync("Очки славы кота: " + getUserGlory());
+        if (getMessageText().equals("show")) {
+            sendTextMessageAsync(listName.get(0) + " " + listName.get(1) + "\n" + "ind " + ind);
+            for (int i = 0; i < allText.size(); i++) {
+                sendTextMessageAsync(String.valueOf(allText.get(i)) + "\n");
+            }
         }
 
     }
@@ -109,6 +143,7 @@ public class MyFirstTelegramBot extends MultiSessionTelegramBot {
 }
 /* Редактирование смс от пользователя
 || getMessageText().equals("/glory")
+
 if (getMessageText().equals("/start")) {
             sendTextMessageAsync("Привет, будущий программист Сергей.");
         } else if (getMessageText().equals("/bye")) {
